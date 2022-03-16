@@ -59,7 +59,25 @@ export class EventsController {
   })
   @ApiOkResponse({ status: 200, description: 'Evento Ok' })
   findEmailClientEvent(@Param('id') id: string) {
-    return this.eventService.getEmailClientForEvent(+id);
+    return this.eventService.getEmailForEvent(+id);
+  }
+
+  @Get('emailClient/:id')
+  @ApiOperation({
+    summary: 'Permite obtener el email del cliente por medio de su id.',
+  })
+  @ApiOkResponse({ status: 200, description: 'Evento Ok' })
+  findEmailClient(@Param('id') id: string) {
+    return this.eventService.getEmailForClient(+id);
+  }
+
+  @Get('lastEvent/:id')
+  @ApiOperation({
+    summary: 'Permite obtener el ultimo evento registrado del id cliente.',
+  })
+  @ApiOkResponse({ status: 200, description: 'Evento Ok' })
+  findLastEvento(@Param('id') id: string) {
+    return this.eventService.getLastEventClient(+id);
   }
 
   @Get('filterDate/:startDate/:startEnd/:id')

@@ -45,11 +45,27 @@ export class EventsService {
   }
 
   //obtiene el correo electronico del cliente, por medio del id del evento que esta modificando.
-  getEmailClientForEvent(id: number) {
+  getEmailForEvent(id: number) {
     const query = `select c.email from evento
     inner join cliente c on evento.idCliente = c.id
     where evento.id = ${id};`;
 
+    return this.repository.query(query);
+  }
+
+  //obtiene el correo electronico del cliente, por medio de su id
+  getEmailForClient(id: number) {
+    const query = `select email, nombre_completo from cliente where cliente.id = ${id};`;
+    return this.repository.query(query);
+  }
+
+  //obtiene el id del ultimo registro que existe en la base de datos, por medio del id del paciente.
+  getLastEventClient(id: number) {
+    const query = `select evento.id as idEvento from evento
+    inner join cliente c on c.id = evento.idCliente
+    where c.id = ${id}
+    order by evento.id desc
+    limit 1`;
     return this.repository.query(query);
   }
 
