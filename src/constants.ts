@@ -15,7 +15,7 @@ export const DatabaseInfo = {
   insecureAuth: true,
 };
 
-// DATABASE LOCAL
+//DATABASE LOCAL
 // export const DatabaseInfo = {
 //   host: 'localhost',
 //   //port: 3306,

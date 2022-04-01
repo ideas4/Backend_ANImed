@@ -34,7 +34,7 @@ import { PriceSheetModule } from './modules/price-sheet/price-sheet.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { EventsModule } from './modules/events/events.module';
 import { ConfigMedModule } from './modules/configurations/config-med/config-med.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     //configuración de base de datos
@@ -48,6 +48,7 @@ import { ConfigMedModule } from './modules/configurations/config-med/config-med.
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
+    ScheduleModule.forRoot(),
     UsersModule,
     SalesModule,
     AccountingModule,

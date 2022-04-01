@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { FreeContactDto } from '../../modules/configurations/config-admin/dto/free-contact.dto';
 import { ConfigService } from '../../modules/configurations/config-admin/config.service';
 import { QuoteEntity } from '../../modules/quote/entities/quote.entity';
+import { Cron, CronExpression, Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class SendMailService {
@@ -293,17 +294,51 @@ export class SendMailService {
       });
   }
 
-  public async sendTest() {
-    //await this.refreshConfig();
-    //console.log(this.refreshConfig());
+  public async sendNotificationAppointment(
+    nombre_cliente: string,
+    to: string,
+    fecha: string,
+    hora: string,
+  ) {
+    await this.refreshConfig();
+    console.log('enviando....');
     this.mailerService
       .sendMail({
-        to: 'kcalderon@ideas4software.com',
-        subject: 'Confirmación de Cuenta',
-        text: 'mensaje de prueba'
+        to: to,
+        subject: 'Notificación de Cita',
+        template: 'notificacion-appointment.pug',
+        context: {
+          // Data to be sent to template engine.
+          nombre_usuario: nombre_cliente,
+          fecha: fecha,
+          hora: hora,
+          empresa: {
+            correo: this.info.correo,
+            direccion: this.info.direccion,
+          },
+        },
       })
       .then(() => {
         console.log('success');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  public async sendTest() {
+    // console.log('prueba correo');
+    await this.refreshConfig();
+    // console.log(await this.refreshConfig());
+    this.mailerService
+      .sendMail({
+        to: 'kcalderon744@gmail.com',
+        //from: 'noreply@nestjs.com',
+        subject: 'Mensaje de prueba de libreria Cron',
+        text: 'mensaje de prueba',
+      })
+      .then(() => {
+        console.log('Correo enviado.');
       })
       .catch((e) => {
         console.log(e);

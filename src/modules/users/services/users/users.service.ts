@@ -105,7 +105,7 @@ export class UsersService {
       usr.nombre_usuario,
       password,
     );
-    // this.email.sendTest();
+    // await this.email.sendTest();
     return {
       usr: usr.nombre_usuario,
       password_generated: password,
