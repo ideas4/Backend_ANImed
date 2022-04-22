@@ -429,6 +429,7 @@ export class InventoryService {
           ? element.producto.proveedor.nombre
           : '',
         marca: element.producto.marca ? element.producto.marca.nombre : '',
+        precio_original: element.producto.precio_venta,
       });
     });
     return array;
@@ -485,6 +486,7 @@ export class InventoryService {
       precio_venta: result.producto.precio_venta,
       precio_min: result.producto.precio_min,
       sucursal: result.sucursal ? result.sucursal.nombre : '',
+      bos: result.producto.bos,
     };
     return producto;
   }
