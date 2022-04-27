@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SendMailService } from 'src/services/mailer/send-mail.service';
+import { PdfGeneratorService } from 'src/services/pdf-generator/pdf-generator.service';
 import { Repository } from 'typeorm';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -7,7 +9,11 @@ import { Event } from './entities/event.entity';
 
 @Injectable()
 export class EventsService {
-  constructor(@InjectRepository(Event) private repository: Repository<Event>) {}
+  constructor(
+    @InjectRepository(Event) private repository: Repository<Event>,
+    private pdfServices: PdfGeneratorService,
+    private sendmails: SendMailService,
+  ) {}
 
   async create(createEventDto: CreateEventDto) {
     createEventDto['fecha_creacion'] = new Date();
@@ -75,5 +81,20 @@ export class EventsService {
 
   async remove(id: number) {
     return (await this.repository.delete(id)).affected;
+  }
+
+  async sendTratamientoEmail(
+    correo: string,
+    tratamiento: String,
+    idEvento: number,
+    nombre_paciente: String,
+  ) {
+    this.pdfServices.generateTratamientoPdf(
+      tratamiento,
+      idEvento,
+      nombre_paciente,
+    );
+
+    this.sendmails.sendTratamiento(idEvento, nombre_paciente, correo);
   }
 }

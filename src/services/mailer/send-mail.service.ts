@@ -346,7 +346,7 @@ export class SendMailService {
   }
 
   /**
-   * Enviar correo de cotización
+   * Enviar correo de factura
    * @param
    * @param pdf_name
    */
@@ -381,6 +381,49 @@ export class SendMailService {
           {
             filename: dte,
             path: 'uploads/docs/' + dte + '.pdf',
+            contentType: 'application/pdf',
+          },
+        ],
+      })
+      .then(() => {
+        console.log('success');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  /**
+   * Enviar correo de tratamiento
+   * @param
+   * @param pdf_name
+   */
+  public async sendTratamiento(
+    idTratamiento: number,
+    nombreParciente: String,
+    correo: string,
+  ) {
+    await this.refreshConfig();
+    console.log('enviando tratamiento...');
+    this.mailerService
+      .sendMail({
+        to: correo,
+        subject: 'AniMed',
+        template: 'treatment-mail',
+        context: {
+          // Data to be sent to template engine.
+          logo: this.info.logo,
+          nombre_cliente: nombreParciente,
+          empresa: {
+            correo: this.info.correo,
+            direccion: this.info.direccion,
+          },
+        },
+        attachments: [
+          {
+            filename: 'TR-' + String(idTratamiento),
+            path:
+              'uploads/tratamientos/' + 'TR-' + String(idTratamiento) + '.pdf',
             contentType: 'application/pdf',
           },
         ],

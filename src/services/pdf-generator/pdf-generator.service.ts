@@ -31,12 +31,14 @@ export class PdfGeneratorService {
     direccion: string;
     telefono: string;
     correo: string;
+    especialidad: string;
   } = {
     telefono: '',
     correo: '',
     direccion: '',
     nombre: '',
     logo: '',
+    especialidad: '',
   };
   private default_product_image = 'assets/img/empty.png';
   private default_logo = 'assets/img/logo.png';
@@ -54,6 +56,7 @@ export class PdfGeneratorService {
     this.info.direccion = configEcommerce.direccion;
     this.info.telefono = configEcommerce.telefono;
     this.info.correo = configEcommerce.correo_electronico;
+    this.info.especialidad = configEcommerce.terminos_condiciones;
   }
 
   /**
@@ -733,6 +736,12 @@ export class PdfGeneratorService {
     doc.end();
   }
 
+  private static generateTratamientosPDF(docDefinition, path) {
+    const doc = new PdfMake(fonts).createPdfKitDocument(docDefinition);
+    doc.pipe(fs.createWriteStream('uploads/tratamientos/' + path));
+    doc.end();
+  }
+
   /**
    * Get buffer of an image to insert on PDF
    * @param path
@@ -820,6 +829,227 @@ export class PdfGeneratorService {
       total,
       products: array,
     };
+  }
+
+  /**
+   * Genera el tratamiento
+   */
+  async generateTratamientoPdf(
+    tratamiento: String,
+    idEvento: number,
+    nombre_paciente: String,
+  ) {
+    await this.refreshConfiguration();
+    //console.log(this.info.logo);
+    let aux = this.info.logo.split('/');
+    this.info.logo =
+      aux[0] + '//' + aux[2] + '/' + aux[3] + '/config/' + 'logomed.png';
+
+    // const encabezado = htmlToPdfMake(quote.encabezado_pagina, {
+    //   window: window,
+    // });
+    // const terminos = htmlToPdfMake(quote.condiciones, { window: window });
+    // const pago = htmlToPdfMake(quote.terminos_pago, { window: window });
+    // const garantia = htmlToPdfMake(quote.garantia, { window: window });
+    // const footer = htmlToPdfMake(quote.pie_pagina, { window: window });
+    const imageFel = await this.getImageFromURL(
+      'https://d1lofqbqbj927c.cloudfront.net/sonoraGT/2021/08/27ag.png',
+      this.default_logo,
+    );
+    const image = await this.getImageFromURL(this.info.logo, this.default_logo);
+
+    const docDefinition = {
+      pageSize: 'A5',
+      footer: {
+        columns: [
+          {
+            style: 'table',
+            layout: 'noBorders',
+            table: {
+              widths: ['*', '*', '*'],
+              headerRows: 1,
+              body: [
+                [
+                  {
+                    text: 'Cumpla con el tratamiento' + ' ',
+                    fontSize: 8,
+                    alignment: 'right',
+                  },
+                  {
+                    text: 'FAVOR NO CAMBIAR ESTA RECETA',
+                    fontSize: 8,
+                    alignment: 'center',
+                    bold: true,
+                  },
+                  {
+                    text: 'Cumpla con su cita de control',
+                    alignment: 'left',
+                    fontSize: 8,
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+
+      content: [
+        //LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' '], [' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 2;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        // ENCABEZADO IZQUIERDA
+        {
+          style: 'superHeader',
+          columns: [
+            {
+              width: '35%',
+              image: image,
+              fit: [100, 100],
+            },
+            //ENCABEZADO CENTRO
+            [
+              {
+                fontSize: 9,
+                text: 'Dr. ' + this.info.nombre,
+                alignment: 'center',
+              },
+              {
+                fontSize: 9,
+                text: this.info.especialidad,
+                alignment: 'center',
+              },
+              {
+                fontSize: 9,
+                text: this.info.direccion,
+                alignment: 'center',
+              },
+              {
+                fontSize: 9,
+                text: this.info.correo,
+                alignment: 'center',
+              },
+              {
+                fontSize: 9,
+                text: 'Teléfono: ' + this.info.telefono,
+                alignment: 'center',
+              },
+            ],
+            //ENCABEZADO DERECHO
+            [],
+          ],
+        },
+        //LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' '], [' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 2;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        { text: '', style: ['header'] },
+        {
+          columns: [
+            //CLIENTE (MITAD IZQUIERDA)
+            [
+              {
+                style: 'table',
+                layout: 'noBorders',
+                table: {
+                  widths: ['auto', '*'],
+                  headerRows: 1,
+                  body: [
+                    ['Fecha: ', moment().format('DD/MM/YY, h:mm:ss a')],
+                    ['Nombre: ', nombre_paciente],
+                  ],
+                },
+              },
+            ],
+
+            [],
+          ],
+        },
+
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        //TRATAMIENTO
+        { text: tratamiento, alignment: 'justify', fontSize: 9 },
+        {},
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [true, true, true, true],
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 10, 0, 10],
+        },
+        subheader_left: {
+          fontSize: 13,
+          bold: true,
+          alignment: 'left',
+          margin: [0, 10, 0, 10],
+        },
+        table1: {
+          margin: [0, 5, 0, 15],
+        },
+        header_text: {
+          margin: [0, 0, 0, 20],
+        },
+        footer: {
+          margin: [1, 50, 0, 0],
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'gray',
+          fillColor: '#eeeeee',
+        },
+      },
+      defaultStyle: {
+        fontSize: 10,
+      },
+    };
+    //Generar Documento
+    PdfGeneratorService.generateTratamientosPDF(
+      docDefinition,
+      'TR-' + String(idEvento) + '.pdf',
+    );
   }
 
   /*
@@ -1244,7 +1474,7 @@ export class PdfGeneratorService {
     if (numUnidades > 0) return strSin + ' Y ' + this.Unidades(numUnidades);
 
     return strSin;
-  } //DecenasY()
+  }
 
   Centenas(num) {
     let centenas = Math.floor(num / 100);
@@ -1288,7 +1518,7 @@ export class PdfGeneratorService {
     if (resto > 0) letras += '';
 
     return letras;
-  } //Seccion()
+  }
 
   Miles(num) {
     let divisor = 1000;
@@ -1314,7 +1544,7 @@ export class PdfGeneratorService {
     if (strMillones == '') return strMiles;
 
     return strMillones + ' ' + strMiles;
-  } //Millones()
+  }
 
   NumeroALetras(num, currency) {
     currency = currency || {};

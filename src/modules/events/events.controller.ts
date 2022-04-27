@@ -34,6 +34,21 @@ export class EventsController {
     return this.eventService.create(createEventDto);
   }
 
+  @Post('mail')
+  @ApiOperation({
+    summary:
+      'Permite enviar por correo el tratamiento del evento seleccionado.',
+  })
+  @ApiOkResponse({ status: 200, description: 'Evento Ok' })
+  sendEmail(@Body() event: any) {
+    return this.eventService.sendTratamientoEmail(
+      event.correo,
+      event.tratamiento,
+      event.idEvento,
+      event.nombre_paciente,
+    );
+  }
+
   @Get('client/:id')
   @ApiOperation({
     summary:
