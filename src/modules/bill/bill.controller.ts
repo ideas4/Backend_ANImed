@@ -70,6 +70,20 @@ export class BillController {
     return this.readonly.findAll();
   }
 
+  @Get('active')
+  @ApiOperation({ summary: 'Permite obtener el listado de facturas activas' })
+  @ApiOkResponse({ status: 200, description: 'Facturas Ok' })
+  listBillActive() {
+    return this.readonly.listBillsActive();
+  }
+
+  @Get('cancel')
+  @ApiOperation({ summary: 'Permite obtener el listado de facturas anuladas' })
+  @ApiOkResponse({ status: 200, description: 'Facturas Ok' })
+  listBillCancel() {
+    return this.readonly.listBillsCancel();
+  }
+
   @Put(':tipo/:serie/:numero')
   @ApiOperation({
     summary: 'Permite obtener la información de una factura para editar',
