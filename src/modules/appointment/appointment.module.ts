@@ -40,6 +40,7 @@ import { PdfGeneratorService } from 'src/services/pdf-generator/pdf-generator.se
       FeaturedCategory,
       QuoteClientEntity,
     ]),
+    AppointmentTypeModule,
   ],
   controllers: [AppointmentController],
   providers: [
