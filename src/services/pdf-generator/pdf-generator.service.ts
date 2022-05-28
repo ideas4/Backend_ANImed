@@ -1079,6 +1079,7 @@ export class PdfGeneratorService {
     // const pago = htmlToPdfMake(quote.terminos_pago, { window: window });
     // const garantia = htmlToPdfMake(quote.garantia, { window: window });
     // const footer = htmlToPdfMake(quote.pie_pagina, { window: window });
+    const nit_emisor = await this.configService.getNitEmisor();
     const imageFel = await this.getImageFromURL(
       'https://d1lofqbqbj927c.cloudfront.net/sonoraGT/2021/08/27ag.png',
       this.default_logo,
@@ -1117,6 +1118,11 @@ export class PdfGeneratorService {
               {
                 fontSize: 8,
                 text: this.info.telefono,
+                alignment: 'center',
+              },
+              {
+                fontSize: 9,
+                text: 'NIT: ' + nit_emisor[0].nit_emisor,
                 alignment: 'center',
               },
             ],
