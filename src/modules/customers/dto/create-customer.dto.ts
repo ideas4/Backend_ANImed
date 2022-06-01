@@ -1,18 +1,17 @@
-import { IsNotEmpty,IsEmail } from 'class-validator';
+import { IsNotEmpty, IsEmail } from 'class-validator';
 
 export class CreateCustomerDto {
+  @IsNotEmpty({ message: 'El nombre es requerido' })
+  nombre_completo: string;
 
-    @IsNotEmpty({message:'El nombre es requerido'})
-    nombre_completo:string;
+  direccion: string;
 
-    direccion:string;
+  telefono: string;
 
-    telefono:string;
+  //@IsEmail({},{message:'El email no cumple con el formato'})
+  email: string;
 
-    //@IsEmail({},{message:'El email no cumple con el formato'})
-    email:string;
+  nit: string;
 
-    nit:string;
-
-    notas:string;
+  notas: string;
 }
