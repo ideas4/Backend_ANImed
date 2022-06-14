@@ -1608,7 +1608,7 @@ export class PdfGeneratorService {
                   [
                     {
                       text: this.info.especialidad,
-                      fontSize: 12,
+                      fontSize: 10,
                       alignment: 'left',
                     },
                     {
@@ -1617,7 +1617,7 @@ export class PdfGeneratorService {
                         '\n Teléfono: ' +
                         this.info.telefono,
                       alignment: 'right',
-                      fontSize: 12,
+                      fontSize: 10,
                     },
                   ],
                 ],
