@@ -49,6 +49,24 @@ export class EventsController {
     );
   }
 
+  @Post('certificate')
+  @ApiOperation({
+    summary: 'Permite generar un certificado del paciente.',
+  })
+  @ApiOkResponse({ status: 200, description: 'Evento Ok' })
+  generateCertificate(@Body() info: any) {
+    return this.eventService.generateCertificate(info.data, info.nameFile);
+  }
+
+  @Post('constancy')
+  @ApiOperation({
+    summary: 'Permite generar una constancia del paciente.',
+  })
+  @ApiOkResponse({ status: 200, description: 'Evento Ok' })
+  generateConstancy(@Body() info: any) {
+    return this.eventService.generateConstancy(info.data, info.nameFile);
+  }
+
   @Get('client/:id')
   @ApiOperation({
     summary:

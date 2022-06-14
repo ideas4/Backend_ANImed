@@ -35,6 +35,7 @@ import { AppointmentModule } from './modules/appointment/appointment.module';
 import { EventsModule } from './modules/events/events.module';
 import { ConfigMedModule } from './modules/configurations/config-med/config-med.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { InsuragesModule } from './modules/insurages/insurages.module';
 @Module({
   imports: [
     //configuración de base de datos
@@ -71,6 +72,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AppointmentModule,
     EventsModule,
     ConfigMedModule,
+    InsuragesModule,
   ],
   controllers: [AppController],
   providers: [

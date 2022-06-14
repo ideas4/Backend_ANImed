@@ -32,6 +32,7 @@ export class PdfGeneratorService {
     telefono: string;
     correo: string;
     especialidad: string;
+    colegiado: string;
   } = {
     telefono: '',
     correo: '',
@@ -39,6 +40,7 @@ export class PdfGeneratorService {
     nombre: '',
     logo: '',
     especialidad: '',
+    colegiado: '',
   };
   private default_product_image = 'assets/img/empty.png';
   private default_logo = 'assets/img/logo.png';
@@ -46,7 +48,7 @@ export class PdfGeneratorService {
   constructor(private configService: ConfigService) {}
 
   /**
-   * Get config from database
+   * Get config doctor from database
    */
   async refreshConfiguration() {
     const config = await this.configService.findOne();
@@ -57,6 +59,7 @@ export class PdfGeneratorService {
     this.info.telefono = configEcommerce.telefono;
     this.info.correo = configEcommerce.correo_electronico;
     this.info.especialidad = configEcommerce.terminos_condiciones;
+    this.info.colegiado = configEcommerce.titulo_inicio;
   }
 
   /**
@@ -1401,6 +1404,396 @@ export class PdfGeneratorService {
     };
     //Generar Documento
     PdfGeneratorService.generatePDF(docDefinition, dte + '.pdf');
+  }
+
+  /*
+    Genera el certificado médico
+    Params: cuerpo del certificado y nombre doc.  
+  */
+  async generateCertificate(bodyCertificate: string, nameFile: string) {
+    await this.refreshConfiguration();
+    //console.log(this.info.logo);
+    const docDefinition = {
+      pageMargins: [90, 200, 90, 200],
+      //FOOTER DEL DOCUMENTO
+      footer: {
+        columns: [
+          {
+            style: 'table',
+            layout: 'noBorders',
+            table: {
+              widths: ['*', 'auto', '*'],
+              headerRows: 1,
+              body: [
+                [
+                  {
+                    text: '',
+                    fontSize: 8,
+                    alignment: 'right',
+                  },
+                  {
+                    text:
+                      'DR.' +
+                      this.info.nombre.toUpperCase() +
+                      '\n' +
+                      this.info.especialidad.toUpperCase() +
+                      '\n' +
+                      'COLEGIADO ' +
+                      this.info.colegiado,
+                    fontSize: 11,
+                    alignment: 'center',
+                    bold: true,
+                  },
+                  {
+                    text: '',
+                    alignment: 'left',
+                    fontSize: 8,
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+
+      content: [
+        //CUERPO DE CERTIFICADO
+        { text: 'CERTIFICADO MÉDICO', alignment: 'center', fontSize: 12 },
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        { text: bodyCertificate, alignment: 'justify' },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [true, true, true, true],
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 10, 0, 10],
+        },
+        subheader_left: {
+          fontSize: 13,
+          bold: true,
+          alignment: 'left',
+          margin: [0, 10, 0, 10],
+        },
+        table1: {
+          margin: [0, 5, 0, 15],
+        },
+        header_text: {
+          margin: [0, 0, 0, 20],
+        },
+        footer: {
+          margin: [1, 50, 0, 0],
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'gray',
+          fillColor: '#eeeeee',
+        },
+      },
+      defaultStyle: {
+        fontSize: 10,
+      },
+    };
+    //Generar Documento
+    PdfGeneratorService.generatePDF(docDefinition, 'CERT-' + nameFile + '.pdf');
+  }
+
+  /*
+    Genera la constancia de un paciente
+    Params: cuerpo de la constancia  y nombre doc.  
+  */
+  async generateConstancy(bodyConstancy: string, nameFile: string) {
+    moment.locale('es');
+    let es = moment();
+    await this.refreshConfiguration();
+    //console.log(this.info.logo);
+    const docDefinition = {
+      pageMargins: [80, 80, 80, 100],
+      //FOOTER DEL DOCUMENTO
+      footer: {
+        columns: [
+          {
+            style: 'table',
+            layout: 'noBorders',
+            table: {
+              widths: ['*', 'auto', '*'],
+              headerRows: 1,
+              body: [
+                [
+                  {
+                    text: '',
+                    fontSize: 8,
+                    alignment: 'right',
+                  },
+                  {
+                    text:
+                      'DR. ' +
+                      this.info.nombre.toUpperCase() +
+                      '\n' +
+                      this.info.especialidad.toUpperCase() +
+                      '\n' +
+                      'COLEGIADO: ' +
+                      this.info.colegiado,
+                    fontSize: 11,
+                    alignment: 'center',
+                    bold: true,
+                  },
+                  {
+                    text: '',
+                    alignment: 'left',
+                    fontSize: 8,
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+
+      content: [
+        //ENCABEZADO NOMBRE
+        {
+          columns: [
+            {
+              style: 'table',
+              layout: 'noBorders',
+              table: {
+                widths: ['auto'],
+                headerRows: 1,
+                body: [
+                  [
+                    {
+                      text: 'Dr. ' + this.info.nombre,
+                      fontSize: 12,
+                      alignment: 'left',
+                      bold: true,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+
+        //ENCABEZADO DATOS DOCTOR
+        {
+          columns: [
+            {
+              style: 'table',
+              layout: 'noBorders',
+              table: {
+                widths: ['auto', '*'],
+                headerRows: 1,
+                body: [
+                  [
+                    {
+                      text: this.info.especialidad,
+                      fontSize: 12,
+                      alignment: 'left',
+                    },
+                    {
+                      text:
+                        this.info.direccion +
+                        '\n Teléfono: ' +
+                        this.info.telefono,
+                      alignment: 'right',
+                      fontSize: 12,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        //FECHA
+        {
+          columns: [
+            {
+              style: 'table',
+              layout: 'noBorders',
+              table: {
+                widths: ['*', '*', 'auto'],
+                headerRows: 1,
+                body: [
+                  [
+                    {
+                      text: ' ',
+                      fontSize: 12,
+                      alignment: 'right',
+                    },
+                    {
+                      text: '',
+                      fontSize: 12,
+                      alignment: 'center',
+                      bold: true,
+                    },
+                    {
+                      text: 'Guatemala, ' + es.format('LL'),
+                      alignment: 'left',
+                      fontSize: 12,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        //CUERPO DE CERTIFICADO
+        {
+          text: 'A quien interese,',
+          alignment: 'left',
+          fontSize: 12,
+          margin: [0, 150, 0, 0],
+        },
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        //TEXTO DE LA CONSTANCIA
+        {
+          text: bodyConstancy,
+          alignment: 'justify',
+        },
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        //SALTO DE LINEA
+        {
+          table: {
+            widths: ['*'],
+            body: [[' ']],
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return i === 0 || i === node.table.body.length ? 0 : 1;
+            },
+            vLineWidth: function (i, node) {
+              return 0;
+            },
+          },
+        },
+        {
+          text: 'Me suscribo atentamente de ustedes,',
+          alignment: 'justify',
+          margin: [0, 0, 0, 150],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [true, true, true, true],
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 10, 0, 10],
+        },
+        subheader_left: {
+          fontSize: 13,
+          bold: true,
+          alignment: 'left',
+          margin: [0, 10, 0, 10],
+        },
+        table1: {
+          margin: [0, 5, 0, 15],
+        },
+        header_text: {
+          margin: [0, 0, 0, 20],
+        },
+        footer: {
+          margin: [1, 50, 0, 0],
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'gray',
+          fillColor: '#eeeeee',
+        },
+      },
+      defaultStyle: {
+        fontSize: 12,
+      },
+    };
+    //Generar Documento
+    PdfGeneratorService.generatePDF(
+      docDefinition,
+      'CONST-' + nameFile + '.pdf',
+    );
   }
 
   Unidades(num) {

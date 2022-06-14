@@ -59,6 +59,7 @@ import { AppointmentType } from './modules/appointment/appointment-type/entities
 import { Event } from './modules/events/entities/event.entity';
 import { AttachedEvent } from './modules/events/attached-event/entities/attached-event.entity';
 import { ConfigMed } from './modules/configurations/config-med/entities/config-med.entity';
+import { Insurage } from './modules/insurages/entities/insurage.entity';
 
 export const ENTITIES = [
   Color,
@@ -89,6 +90,7 @@ export const ENTITIES = [
   PaymentMethod,
   OrderType,
   Coupon,
+  Insurage,
   CouponType,
   Bank,
   BankAccount,

@@ -79,7 +79,7 @@ export class Customer {
   seguro: string;
 
   @Column({ type: 'varchar', nullable: true })
-  USERDEF_3: string;
+  fecha_nac: string;
 
   @Column({ type: 'varchar', nullable: true })
   USERDEF_4: string;

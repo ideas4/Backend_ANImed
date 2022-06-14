@@ -97,4 +97,12 @@ export class EventsService {
 
     this.sendmails.sendTratamiento(idEvento, nombre_paciente, correo);
   }
+
+  async generateCertificate(cuerpoCertificado: string, nameFile: string) {
+    this.pdfServices.generateCertificate(cuerpoCertificado, nameFile);
+  }
+
+  async generateConstancy(cuerpoCertificado: string, nameFile: string) {
+    this.pdfServices.generateConstancy(cuerpoCertificado, nameFile);
+  }
 }
