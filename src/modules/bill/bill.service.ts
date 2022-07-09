@@ -86,6 +86,7 @@ export class BillService {
     serie: string,
     numero: string,
     fecha_certificado: string,
+    texto: string,
   ) {
     this.pdfServices.generateBillPdf(
       nit,
@@ -97,6 +98,7 @@ export class BillService {
       serie,
       numero,
       fecha_certificado,
+      texto,
     );
     this.sendmails.sendBill(correo, nombre, dte, fecha, serie);
   }
@@ -110,5 +112,23 @@ export class BillService {
   async listBillsCancel() {
     return this.billRepository.query(`
     select tipo, serie, numero, dte, fecha_anulacion, nit_cliente, razonsocial_cliente, estado from encabezado_factura where encabezado_factura.estado = 0;`);
+  }
+
+  async notificationFel(disponibilidad: string) {
+    let query = `SELECT correo_electronico FROM configuracion_ecommerce`;
+
+    let correo_admin = await this.billRepository.query(query);
+    console.log(correo_admin[0].correo_electronico);
+    //console.log(typeof disponibilidad);
+    if (disponibilidad == null || disponibilidad == '0') {
+      //enviar notificacion de que ya no hay fels o no hay informacion configurada
+      this.sendmails.sendNotAvailableNotificationFel('kcalderon744@gmail.com');
+    } else {
+      //enviar notificacion con la cantidad que quedan disponibles
+      this.sendmails.sendNotificationFel(
+        'kcalderon744@gmail.com',
+        disponibilidad,
+      );
+    }
   }
 }

@@ -60,7 +60,18 @@ export class BillController {
       dataBill.serie,
       dataBill.numero,
       dataBill.fecha_certificado,
+      dataBill.texto,
     );
+  }
+
+  @Post('notificationFel')
+  @ApiOperation({
+    summary:
+      'Permite enviar notificaciones dependiendo la cantidad de fels disponibles',
+  })
+  @ApiOkResponse({ status: 200, description: 'Factura OK' })
+  notificationFel(@Body() notification: any) {
+    return this.readonly.notificationFel(notification.cantidad);
   }
 
   @Get()

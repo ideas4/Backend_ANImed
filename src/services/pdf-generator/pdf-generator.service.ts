@@ -1068,6 +1068,7 @@ export class PdfGeneratorService {
     serie: string,
     numero: string,
     fecha_certificado: string,
+    texto: string,
   ) {
     await this.refreshConfiguration();
     //console.log(this.info.logo);
@@ -1295,6 +1296,8 @@ export class PdfGeneratorService {
             },
           },
         },
+        //TEXTO DE SUJETO A...
+        { text: texto, alignment: 'center' },
         //TABLA DE LETRAS
         {
           style: 'tableExample',

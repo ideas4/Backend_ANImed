@@ -437,6 +437,63 @@ export class SendMailService {
   }
 
   /**
+   * Enviar notificaciones por disponibilidad de documentos fel
+   * @params correo, cantidad
+   *
+   */
+  public async sendNotificationFel(correo: string, cantidad: string) {
+    await this.refreshConfig();
+    console.log('enviando notificacion....');
+    this.mailerService
+      .sendMail({
+        to: correo,
+        subject: 'Notificación de documentos Fel',
+        template: 'notification-fel.pug',
+        context: {
+          disponible: cantidad,
+          empresa: {
+            correo: this.info.correo,
+            direccion: this.info.direccion,
+          },
+        },
+      })
+      .then(() => {
+        console.log('success');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  /**
+   * Enviar notificaciones por
+   * @params correo
+   *
+   */
+  public async sendNotAvailableNotificationFel(correo: string) {
+    await this.refreshConfig();
+    console.log('enviando notificacion....');
+    this.mailerService
+      .sendMail({
+        to: correo,
+        subject: 'Notificación de documentos Fel',
+        template: 'notification-notAvailableFel.pug',
+        context: {
+          empresa: {
+            correo: this.info.correo,
+            direccion: this.info.direccion,
+          },
+        },
+      })
+      .then(() => {
+        console.log('success');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  /**
    * Obtener la URL de la imagen
    * @param imagen
    * @private
