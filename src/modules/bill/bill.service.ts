@@ -118,15 +118,17 @@ export class BillService {
     let query = `SELECT correo_electronico FROM configuracion_ecommerce`;
 
     let correo_admin = await this.billRepository.query(query);
-    console.log(correo_admin[0].correo_electronico);
+    //console.log(correo_admin[0].correo_electronico);
     //console.log(typeof disponibilidad);
     if (disponibilidad == null || disponibilidad == '0') {
       //enviar notificacion de que ya no hay fels o no hay informacion configurada
-      this.sendmails.sendNotAvailableNotificationFel('kcalderon744@gmail.com');
+      this.sendmails.sendNotAvailableNotificationFel(
+        correo_admin[0].correo_electronico,
+      );
     } else {
       //enviar notificacion con la cantidad que quedan disponibles
       this.sendmails.sendNotificationFel(
-        'kcalderon744@gmail.com',
+        correo_admin[0].correo_electronico,
         disponibilidad,
       );
     }

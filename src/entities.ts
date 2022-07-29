@@ -60,9 +60,10 @@ import { Event } from './modules/events/entities/event.entity';
 import { AttachedEvent } from './modules/events/attached-event/entities/attached-event.entity';
 import { ConfigMed } from './modules/configurations/config-med/entities/config-med.entity';
 import { Insurage } from './modules/insurages/entities/insurage.entity';
-
+import { ControlFelLimite } from './modules/controlfel-limite/entities/controlfel-limite.entity';
 export const ENTITIES = [
   Color,
+  ControlFelLimite,
   Spec,
   SpecProduct,
   Product,

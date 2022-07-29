@@ -36,6 +36,7 @@ import { EventsModule } from './modules/events/events.module';
 import { ConfigMedModule } from './modules/configurations/config-med/config-med.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { InsuragesModule } from './modules/insurages/insurages.module';
+import { ControlfelLimiteModule } from './modules/controlfel-limite/controlfel-limite.module';
 @Module({
   imports: [
     //configuración de base de datos
@@ -73,6 +74,7 @@ import { InsuragesModule } from './modules/insurages/insurages.module';
     EventsModule,
     ConfigMedModule,
     InsuragesModule,
+    ControlfelLimiteModule,
   ],
   controllers: [AppController],
   providers: [
